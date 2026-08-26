@@ -1,0 +1,51 @@
+# ────────────────────────────────────────────────────────────
+# Bashtop theme - Red Wedge
+# Approved by the Central Committee of the Omacom Foundation
+# ────────────────────────────────────────────────────────────
+
+theme[main_bg]=""
+
+theme[main_fg]="#211c18"
+theme[title]="#8a8272"
+theme[hi_fg]="#c33d2e"
+theme[selected_bg]="#c33d2e"
+theme[selected_fg]="#efe5d0"
+theme[inactive_fg]="#b5a98c"
+theme[proc_misc]="#8a8272"
+theme[cpu_box]="#c9bfa8"
+theme[mem_box]="#c9bfa8"
+theme[net_box]="#c9bfa8"
+theme[proc_box]="#c9bfa8"
+theme[div_line]="#c9bfa8"
+
+theme[temp_start]="#6d7a4f"
+theme[temp_mid]="#c99a2e"
+theme[temp_end]="#a02f22"
+
+theme[cpu_start]="#6d7a4f"
+theme[cpu_mid]="#c99a2e"
+theme[cpu_end]="#a02f22"
+
+theme[free_start]="#6d7a4f"
+theme[free_mid]="#c99a2e"
+theme[free_end]="#a02f22"
+
+theme[cached_start]="#6d7a4f"
+theme[cached_mid]="#c99a2e"
+theme[cached_end]="#a02f22"
+
+theme[available_start]="#6d7a4f"
+theme[available_mid]="#c99a2e"
+theme[available_end]="#a02f22"
+
+theme[used_start]="#6d7a4f"
+theme[used_mid]="#c99a2e"
+theme[used_end]="#a02f22"
+
+theme[download_start]="#6d7a4f"
+theme[download_mid]="#c99a2e"
+theme[download_end]="#a02f22"
+
+theme[upload_start]="#6d7a4f"
+theme[upload_mid]="#c99a2e"
+theme[upload_end]="#a02f22"
