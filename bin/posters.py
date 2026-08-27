@@ -1,19 +1,26 @@
 """Nine constructivist posters for the Red Wedge theme.
 
-All nine render at one uniform 3:2 resolution (3840x2560, >= 3840 wide).
-The set is locked to three constructivist inks: aged paper, near-black,
-party red (plus shades of those). Cells are distinguished by
-red:black:paper area ratios in a checker-like ordering, not by color:
+Native-16:9 repair (2026-08-27): all nine render at 3840x2160, identical to
+the desktop hero, so Quickshell's Image.PreserveAspectCrop never strips
+content on a 16:9 output. Composition, not scaling: heights were recut for
+the shorter canvas (2160 vs the old 2560), not squeezed. The set is locked
+to three constructivist inks: aged paper, near-black, party red (plus
+shades). Cells are distinguished by red:black:paper area ratios in a
+checker-like ordering, not by color:
 
     row 1  bright sunburst | dark starcog    | mid canonical wedge
-    row 2  dark banner     | mid target      | bright grid
-    row 3  red field       | bright manifesto| dark macro
+    row 2  dark grid       | mid target      | dark banner
+    row 3  red field       | dark macro      | bright manifesto
 
 Diagonals alternate direction (wedge rises, redfield band falls).
 Copy keeps the Oligarchy joke and DHH's line; no real persons, no
 leaders, nothing copyrighted. Text is secondary: every thumbnail reads
-by silhouette alone.
+by silhouette alone. `rw.Sheet.text/paste/ring_star/patrons` assert every
+critical placement stays inside the 5% safe margin -- a bad coordinate
+raises at render time instead of shipping a clipped poster.
 """
+
+import math
 
 from rw import (
     Sheet, PAPER, PAPER_DEEP, INK, RED, RED_DEEP,
@@ -21,192 +28,205 @@ from rw import (
     SRC_W, SRC_H,
 )
 
+CX, CY = SRC_W / 2, SRC_H / 2  # 1920, 1080
+
 
 def poster_sunburst():
     """Bright anchor. Rising red sun, ink rays, horizon rule."""
     s = Sheet(SRC_W, SRC_H)
+    cx, cy = 2560, 680
     for i in range(18):
         ang = -178 + i * (176 / 17)
-        r1 = 950 if i % 2 else 1300
-        s.ray(2560, 980, ang, 560, r1, 44, INK)
-    s.disc(2560, 980, 500, RED)
-    s.disc(2560, 980, 90, INK)
-    s.ring(2560, 980, 380, 14, PAPER)
-    s.line(0, 1560, 3840, 1560, INK, 14)
-    s.ring_star(330, 330, 110, 46, ring_w=30)
-    f1 = s.font(LATO_BLACK, 240)
-    f2 = s.font(LATO_HEAVY, 54)
-    s.text(200, 1790, "ZERO", f1, INK, anchor="lm")
-    s.text(200, 2020, "DOLLARS", f1, RED, anchor="lm")
-    s.text(200, 2200, "SEVERAL BILLIONAIRES FUND IT ANYWAY", f2, INK,
+        r1 = 680 if i % 2 else 900
+        s.ray(cx, cy, ang, 380, r1, 34, INK)
+    s.disc(cx, cy, 300, RED)
+    s.disc(cx, cy, 64, INK)
+    s.ring(cx, cy, 230, 12, PAPER)
+    s.line(0, 1020, SRC_W, 1020, INK, 12)
+    s.ring_star(340, 290, 85, 36, ring_w=24)
+    f1 = s.font(LATO_BLACK, 170)
+    f2 = s.font(LATO_HEAVY, 42)
+    s.text(240, 1350, "ZERO", f1, INK, anchor="lm")
+    s.text(240, 1520, "DOLLARS", f1, RED, anchor="lm")
+    s.text(240, 1660, "SEVERAL BILLIONAIRES FUND IT ANYWAY", f2, INK,
            tracking=8, anchor="lm")
-    s.patrons(200, 2340, r_big=18, r_small=12, gap=52)
-    s.text(3640, 2200, "ELITE CAPITAL \u00b7 PUBLIC CODE", s.font(LATO_HEAVY, 54),
+    s.patrons(240, 1780, r_big=15, r_small=10, gap=42)
+    s.text(3600, 1660, "ELITE CAPITAL \u00b7 PUBLIC CODE", s.font(LATO_HEAVY, 42),
            INK, tracking=10, anchor="rm")
-    s.fine(200, 2480, size=24, anchor="lm")
+    s.fine(CX, 1980, size=22, anchor="mm")
     return s.finish(grain_seed=101)
 
 
 def poster_starcog():
     """Dark anchor. Ink field, paper gear, red star of industry."""
     s = Sheet(SRC_W, SRC_H, bg=INK)
-    s.ring_star(300, 260, 100, 42, ring_w=26, ring_color=PAPER)
-    s.gear(1180, 1240, 660, 580, 14, PAPER)
-    s.star(1180, 1240, 400, RED)
-    import math
+    s.ring_star(340, 290, 80, 34, ring_w=22, ring_color=PAPER)
+    s.gear(1180, 1080, 520, 450, 14, PAPER)
+    s.star(1180, 1080, 310, RED)
     for i in range(8):
         a = math.radians(i * 45 - 90)
-        s.disc(1180 + 545 * math.cos(a), 1240 + 545 * math.sin(a), 22, INK)
-    fb = s.font(LATO_BLACK, 150)
-    fm = s.font(LATO_BLACK, 190)
-    fs = s.font(LATO_HEAVY, 64)
-    s.text(1980, 780, "THE PEOPLE'S", fb, PAPER, anchor="lm")
-    s.text(1980, 970, "MACHINE", fm, PAPER, anchor="lm")
-    s.line(1980, 1130, 3620, 1130, RED, 10)
-    s.text(1980, 1240, "RUNS ON ZERO DOLLARS", fs, PAPER, tracking=8, anchor="lm")
-    s.text(1980, 1350, "AND SEVERAL BILLIONAIRES", s.font(LATO_HEAVY, 54),
+        s.disc(1180 + 430 * math.cos(a), 1080 + 430 * math.sin(a), 20, INK)
+    fb = s.font(LATO_BLACK, 120)
+    fm = s.font(LATO_BLACK, 150)
+    fs = s.font(LATO_HEAVY, 50)
+    s.text(1980, 700, "THE PEOPLE'S", fb, PAPER, anchor="lm")
+    s.text(1980, 860, "MACHINE", fm, PAPER, anchor="lm")
+    s.line(1980, 990, 3560, 990, RED, 10)
+    s.text(1980, 1080, "RUNS ON ZERO DOLLARS", fs, PAPER, tracking=8, anchor="lm")
+    s.text(1980, 1170, "AND SEVERAL BILLIONAIRES", s.font(LATO_HEAVY, 42),
            PAPER, tracking=6, anchor="lm")
-    s.patrons(1980, 1520, r_big=20, r_small=13, gap=58,
+    s.patrons(1980, 1300, r_big=17, r_small=11, gap=50,
               color=PAPER, small_color=PAPER_DEEP)
-    s.fine(1980, 2470, color=PAPER_DEEP, size=24, anchor="lm")
+    s.fine(CX, 1980, color=PAPER_DEEP, size=22, anchor="mm")
     return s.finish(grain_seed=102)
 
 
 def poster_wedge(w=SRC_W, h=SRC_H):
     """Canonical composition: the red wedge itself. Also the 16:9 hero."""
     s = Sheet(w, h)
-    k = h / 2160.0
-
-    def Y(y):
-        return y * k
-
-    s.poly([(0, h), (0, Y(1500)), (2980, Y(1275)), (1500, h)], RED)
+    s.poly([(0, h), (0, 1500), (2980, 1275), (1500, h)], RED)
     for off, wd in ((90, 12), (150, 6), (210, 4)):
-        s.line(0, Y(1500 - off), 2980, Y(1275 - off), INK, wd)
-    s.ring_star(880, Y(620), 350, 150, ring_w=92)
-    s.paste(2340, Y(780), s.block(
+        s.line(0, 1500 - off, 2980, 1275 - off, INK, wd)
+    s.ring_star(880, 620, 350, 150, ring_w=92)
+    s.paste(2340, 780, s.block(
         [
-            ("REDISTRIBUTING", s.font(LATO_BLACK, 150), INK),
-            ("BILLIONAIRE WEALTH", s.font(LATO_BLACK, 150), INK),
-            ("ONE ISO AT A TIME", s.font(LATO_BLACK, 96), RED),
+            ("REDISTRIBUTING", s.font(LATO_BLACK, 130), INK),
+            ("BILLIONAIRE WEALTH", s.font(LATO_BLACK, 130), INK),
+            ("ONE ISO AT A TIME", s.font(LATO_BLACK, 82), RED),
         ],
-        10,
+        6,
     ))
-    s.text(3060, Y(1630), "ELITE CAPITAL \u00b7 PUBLIC CODE",
-           s.font(LATO_HEAVY, 54), INK, tracking=14)
-    s.text(3060, Y(1730), "ZERO DOLLARS \u00b7 SEVERAL BILLIONAIRES",
-           s.font(LATO_HEAVY, 44), RED_DEEP, tracking=10)
-    s.paste(1035, Y(1890), s.block(
+    s.text(3060, 1650, "ELITE CAPITAL \u00b7 PUBLIC CODE",
+           s.font(LATO_HEAVY, 50), INK, tracking=12)
+    s.text(3060, 1750, "ZERO DOLLARS \u00b7 SEVERAL BILLIONAIRES",
+           s.font(LATO_HEAVY, 40), RED_DEEP, tracking=8)
+    s.paste(1500, 1700, s.block(
         [("OMARCHY \u00b7 THE PEOPLE'S DESKTOP, FUNDED BY THE 0.001%",
-          s.font(LATO_HEAVY, 52), PAPER)],
-        4.3,
+          s.font(LATO_HEAVY, 38), PAPER)],
+        3,
     ))
-    s.patrons(2730, Y(1860))
-    s.fine(2620, Y(2110))
+    s.patrons(2730, 1860)
+    s.fine(2620, 1985, size=22)
     return s.finish(grain_seed=103)
-
-
-def poster_banner():
-    """Ink banner panel, vertical wordmark, ring and star on cream."""
-    s = Sheet(SRC_W, SRC_H)
-    s.rect(0, 0, 1010, 2560, fill=INK)
-    s.star(505, 210, 80, RED)
-    s.paste(505, 1330, s.block([("OMARCHY", s.font(LATO_BLACK, 300), PAPER)], 90))
-    s.text(505, 2440, "SERIES 2026", s.font(MONO, 30), PAPER,
-           tracking=8, anchor="mm")
-    s.text(1150, 300, "ELITE CAPITAL \u00b7 PUBLIC CODE", s.font(LATO_HEAVY, 56),
-           INK, tracking=12, anchor="lm")
-    s.ring_star(2600, 830, 420, 180, ring_w=110)
-    s.patrons(1150, 1430)
-    fb = s.font(LATO_BLACK, 170)
-    s.text(1150, 1620, "THE PEOPLE'S", fb, INK, anchor="lm")
-    s.text(1150, 1810, "DESKTOP", fb, INK, anchor="lm")
-    s.text(1150, 1960, "FUNDED BY THE 0.001%", s.font(LATO_HEAVY, 64),
-           RED_DEEP, tracking=8, anchor="lm")
-    s.poly([(2980, 2560), (3840, 2560), (3840, 1760)], RED)
-    s.fine(1150, 2440, size=24, anchor="lm")
-    return s.finish(grain_seed=104)
-
-
-def poster_target():
-    """Concentric target: take aim, ship isos."""
-    s = Sheet(SRC_W, SRC_H)
-    cx, cy = 1920, 1240
-    for r, col in ((1050, INK), (900, PAPER), (740, RED), (600, PAPER),
-                   (460, RED), (320, PAPER)):
-        s.disc(cx, cy, r, col)
-    s.star(cx, cy, 230, RED)
-    s.text(1920, 150, "BILLIONAIRES BUY ISLANDS", s.font(LATO_HEAVY, 62),
-           INK, tracking=12)
-    s.text(1920, 2400, "WE SHIP ISOS FREE", s.font(LATO_BLACK, 110), RED)
-    s.fine(1920, 2500, size=20)
-    return s.finish(grain_seed=105)
 
 
 def poster_grid():
     """Dark blueprint grid: paper rules on ink, red star of the plan."""
     s = Sheet(SRC_W, SRC_H, bg=INK)
-    for x in (120, 1020, 1920, 2820, 3720):
-        s.line(x, 120, x, 2440, PAPER, 10)
-    for y in (120, 973, 1827, 2440):
-        s.line(120, y, 3720, y, PAPER, 10)
-    s.ring_star(570, 546, 260, 110, ring_w=68, ring_color=PAPER)
-    s.text(2370, 470, "FIVE YEAR PLAN", s.font(LATO_BLACK, 130), PAPER)
-    s.text(2370, 640, "SHIPPED WEEKLY", s.font(LATO_BLACK, 95), PAPER_DEEP)
-    hatch = Sheet(900, 853, bg=INK)
-    for off in range(-853, 900, 48):
-        hatch.line(off, 853, off + 853, 0, PAPER, 7)
-    s.img.paste(hatch.img, (int(120 * s.ss), int(973 * s.ss)))
-    s.star(1470, 1330, 300, RED)
-    s.patrons(1240, 1640, r_big=13, r_small=9, gap=38,
+    for x in (240, 1020, 1800, 2580, 3360):
+        s.line(x, 140, x, 1900, PAPER, 8)
+    for y in (140, 680, 1220, 1900):
+        s.line(240, y, 3360, y, PAPER, 8)
+    s.ring_star(560, 400, 210, 90, ring_w=54, ring_color=PAPER)
+    s.text(2370, 350, "FIVE YEAR PLAN", s.font(LATO_BLACK, 100), PAPER,
+           anchor="lm")
+    s.text(2370, 480, "SHIPPED WEEKLY", s.font(LATO_BLACK, 72), PAPER_DEEP,
+           anchor="lm")
+    hatch = Sheet(760, 540, bg=INK)
+    for off in range(-540, 760, 40):
+        hatch.line(off, 540, off + 540, 0, PAPER, 6)
+    s.img.paste(hatch.img, (int(240 * s.ss), int(680 * s.ss)))
+    s.star(1240, 950, 220, RED)
+    s.patrons(1040, 1170, r_big=11, r_small=8, gap=32,
               color=PAPER, small_color=PAPER_DEEP)
-    s.disc(2370, 1330, 300, PAPER)
-    s.star(2370, 1330, 170, RED)
-    fm = s.font(LATO_HEAVY, 42)
-    s.text(3270, 1180, "CODE PUBLIC", fm, PAPER, tracking=4)
-    s.text(3270, 1320, "PRICE ZERO", fm, PAPER, tracking=4)
-    s.text(3270, 1460, "STARS EIGHT", fm, PAPER, tracking=4)
-    s.line(2950, 1560, 3590, 1560, RED, 8)
-    s.rect(120, 1827, 1020, 2440, fill=PAPER)
-    s.paste(570, 2133, s.block([("OMARCHY", s.font(LATO_BLACK, 105), INK)], 90))
-    s.line(1020, 1930, 2820, 1930, RED, 8)
-    s.text(1920, 2080, "THE PEOPLE'S DESKTOP", s.font(LATO_HEAVY, 58), PAPER)
-    s.text(1920, 2200, "FUNDED BY THE 0.001%", s.font(LATO_HEAVY, 44),
+    s.disc(2370, 950, 220, PAPER)
+    s.star(2370, 950, 125, RED)
+    fm = s.font(LATO_HEAVY, 36)
+    s.text(3200, 850, "CODE PUBLIC", fm, PAPER, tracking=4)
+    s.text(3200, 950, "PRICE ZERO", fm, PAPER, tracking=4)
+    s.text(3200, 1050, "STARS EIGHT", fm, PAPER, tracking=4)
+    s.line(2900, 1130, 3480, 1130, RED, 6)
+    s.rect(240, 1220, 1020, 1900, fill=PAPER)
+    s.paste(630, 1450, s.block([("OMARCHY", s.font(LATO_BLACK, 78), INK)], 90))
+    s.line(1020, 1330, 2660, 1330, RED, 6)
+    s.text(1920, 1450, "THE PEOPLE'S DESKTOP", s.font(LATO_HEAVY, 46), PAPER)
+    s.text(1920, 1550, "FUNDED BY THE 0.001%", s.font(LATO_HEAVY, 34),
            PAPER_DEEP, tracking=6)
-    s.line(1020, 2290, 2820, 2290, PAPER, 3)
-    fnt = s.font(MONO, 19)
-    s.text(3270, 2010, "APPROVED BY THE CENTRAL COMMITTEE", fnt, PAPER, tracking=2)
-    s.text(3270, 2080, "OF THE OMACOM FOUNDATION \u00b7 SERIES 2026", fnt,
+    s.line(1020, 1620, 2660, 1620, PAPER, 3)
+    fnt = s.font(MONO, 15)
+    s.text(1920, 1720, "APPROVED BY THE CENTRAL COMMITTEE", fnt, PAPER,
+           tracking=2)
+    s.text(1920, 1780, "OF THE OMACOM FOUNDATION \u00b7 SERIES 2026", fnt,
            PAPER, tracking=2)
     return s.finish(grain_seed=106)
 
 
+def poster_target():
+    """Concentric target: take aim, ship isos."""
+    s = Sheet(SRC_W, SRC_H)
+    cx, cy = CX, CY
+    for r, col in ((700, INK), (600, PAPER), (480, RED), (380, PAPER),
+                   (280, RED), (180, PAPER)):
+        s.disc(cx, cy, r, col)
+    s.star(cx, cy, 160, RED)
+    s.text(CX, 260, "BILLIONAIRES BUY ISLANDS", s.font(LATO_HEAVY, 48),
+           INK, tracking=10)
+    s.text(CX, 1870, "WE SHIP ISOS FREE", s.font(LATO_BLACK, 92), RED)
+    s.fine(CX, 1975, size=18)
+    return s.finish(grain_seed=105)
+
+
+def poster_banner():
+    """Ink banner panel, vertical wordmark, ring and star on cream."""
+    s = Sheet(SRC_W, SRC_H)
+    s.rect(0, 0, 900, SRC_H, fill=INK)
+    s.star(450, 220, 66, RED)
+    s.paste(450, 1080, s.block([("OMARCHY", s.font(LATO_BLACK, 210), PAPER)], 90))
+    s.text(450, 1970, "SERIES 2026", s.font(MONO, 26), PAPER,
+           tracking=8, anchor="mm")
+    s.text(1020, 260, "ELITE CAPITAL \u00b7 PUBLIC CODE", s.font(LATO_HEAVY, 44),
+           INK, tracking=12, anchor="lm")
+    s.ring_star(2760, 700, 320, 135, ring_w=84)
+    s.patrons(1020, 1180)
+    fb = s.font(LATO_BLACK, 130)
+    s.text(1020, 1360, "THE PEOPLE'S", fb, INK, anchor="lm")
+    s.text(1020, 1520, "DESKTOP", fb, INK, anchor="lm")
+    s.text(1020, 1650, "FUNDED BY THE 0.001%", s.font(LATO_HEAVY, 50),
+           RED_DEEP, tracking=8, anchor="lm")
+    s.poly([(3000, SRC_H), (SRC_W, SRC_H), (SRC_W, 1500)], RED)
+    s.fine(1020, 1980, size=22, anchor="lm")
+    return s.finish(grain_seed=104)
+
+
 def poster_redfield():
     s = Sheet(SRC_W, SRC_H, bg=RED)
-    s.poly([(0, 150), (3840, 1000), (3840, 1900), (0, 1050)], PAPER)
-    s.line(0, 1050, 3840, 1900, INK, 12)
-    s.paste(1920, 1025, s.block(
-        [("REDISTRIBUTING BILLIONAIRE WEALTH", s.font(LATO_BLACK, 118), INK)],
-        -12.5,
+    s.poly([(0, 300), (SRC_W, 780), (SRC_W, 1350), (0, 870)], PAPER)
+    s.line(0, 870, SRC_W, 1350, INK, 10)
+    s.paste(CX, 810, s.block(
+        [("REDISTRIBUTING BILLIONAIRE WEALTH", s.font(LATO_BLACK, 90), INK)],
+        -8,
     ))
-    s.ring_star(3650, 200, 110, 46, ring_w=28, ring_color=PAPER,
+    s.ring_star(3470, 280, 95, 40, ring_w=26, ring_color=PAPER,
                 star_color=PAPER)
-    s.rect(0, 2050, 3840, 2560, fill=INK)
-    s.text(1920, 2190, "ONE ISO AT A TIME", s.font(LATO_BLACK, 150), PAPER)
-    s.patrons(1660, 2370, r_big=18, r_small=12, gap=52,
+    s.rect(0, 1680, SRC_W, SRC_H, fill=INK)
+    s.text(CX, 1790, "ONE ISO AT A TIME", s.font(LATO_BLACK, 100), PAPER)
+    s.patrons(1560, 1900, r_big=13, r_small=9, gap=36,
               color=PAPER, small_color=PAPER_DEEP)
-    s.fine(1920, 2480, color=PAPER, size=22)
+    s.fine(CX, 1985, color=PAPER, size=18)
     return s.finish(grain_seed=107, grain_strength=40)
 
 
-def poster_manifesto():
-    """Bright anchor. Red plate, type block, ink emblem — reads at any scale."""
+def poster_macro():
+    """Macro detail. The Omarchy O fills the frame, cropped by the edges."""
     s = Sheet(SRC_W, SRC_H)
-    s.rect(0, 0, 900, 2560, fill=RED)
-    s.star(450, 170, 80, PAPER)
-    s.paste(450, 1330, s.block(
-        [("MANIFESTO", s.font(LATO_BLACK, 120), PAPER)], 90))
-    fm = s.font(LATO_HEAVY, 58)
+    s.ring(CX, CY, 850, 230, INK)
+    s.star(CX, CY, 560, RED)
+    s.text(CX, CY, "OMARCHY", s.font(LATO_BLACK, 95), PAPER)
+    s.poly([(0, SRC_H), (900, SRC_H), (0, 1300)], RED)
+    s.text(250, 1900, "THE O IS FOR OLIGARCHY", s.font(LATO_HEAVY, 42),
+           PAPER, tracking=6, anchor="lm")
+    s.fine(250, 1985, color=PAPER, size=18, tracking=2, anchor="lm")
+    return s.finish(grain_seed=109)
+
+
+def poster_manifesto():
+    """Bright anchor. Red plate, type block, ink emblem -- reads at any scale."""
+    s = Sheet(SRC_W, SRC_H)
+    s.rect(0, 0, 820, SRC_H, fill=RED)
+    s.star(410, 200, 62, PAPER)
+    s.paste(410, 1080, s.block(
+        [("MANIFESTO", s.font(LATO_BLACK, 92), PAPER)], 90))
+    fm = s.font(LATO_HEAVY, 46)
     lines = [
         "THE PEOPLE OWN THE DESKTOP.",
         "THE BILLIONAIRES OWN THE BILL.",
@@ -217,29 +237,16 @@ def poster_manifesto():
         "ALL POWER TO THE TERMINAL.",
     ]
     for i, ln in enumerate(lines):
-        s.text(1060, 540 + i * 108, ln, fm, INK, tracking=4, anchor="lm")
-    s.line(990, 480, 990, 1300, RED_DEEP, 14)
-    s.text(1060, 1450, "REDISTRIBUTING BILLIONAIRE WEALTH, ONE ISO AT A TIME",
-           s.font(LATO_HEAVY, 54), RED_DEEP, tracking=4, anchor="lm")
-    s.patrons(1060, 1610, r_big=22, r_small=15, gap=64)
-    s.ring_star(3050, 620, 340, 150, ring_w=90)
-    s.star(3450, 1900, 130, INK)
-    s.poly([(3840, 2560), (3140, 2560), (3840, 1760)], RED)
-    s.fine(1060, 2470, size=24, anchor="lm")
+        s.text(960, 400 + i * 92, ln, fm, INK, tracking=4, anchor="lm")
+    s.line(900, 350, 900, 1000, RED_DEEP, 12)
+    s.text(960, 1100, "REDISTRIBUTING BILLIONAIRE WEALTH, ONE ISO AT A TIME",
+           s.font(LATO_HEAVY, 40), RED_DEEP, tracking=3, anchor="lm")
+    s.patrons(960, 1230, r_big=18, r_small=12, gap=52)
+    s.ring_star(2980, 620, 300, 130, ring_w=78)
+    s.star(3400, 1500, 105, INK)
+    s.poly([(SRC_W, SRC_H), (3140, SRC_H), (SRC_W, 1700)], RED)
+    s.fine(960, 1980, size=22, anchor="lm")
     return s.finish(grain_seed=108)
-
-
-def poster_macro():
-    """Macro detail. The Omarchy O fills the frame, cropped by the edges."""
-    s = Sheet(SRC_W, SRC_H)
-    s.ring(1920, 1240, 1500, 400, INK)
-    s.star(1920, 1240, 950, RED)
-    s.text(1920, 1240, "OMARCHY", s.font(LATO_BLACK, 130), PAPER)
-    s.poly([(0, 2560), (1500, 2560), (0, 1000)], RED)
-    s.text(170, 2300, "THE O IS FOR OLIGARCHY", s.font(LATO_HEAVY, 56),
-           PAPER, tracking=6, anchor="lm")
-    s.fine(170, 2470, color=PAPER, size=20, tracking=2, anchor="lm")
-    return s.finish(grain_seed=109)
 
 
 # Collage order = checker of tonal anchors (bright/dark/mid, red, bright, dark).

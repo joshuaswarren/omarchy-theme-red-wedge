@@ -3,11 +3,14 @@
 
 The vision-quota path is unavailable this week, so this script proves the
 visual contract geometrically:
-  1. exact dimensions of every output;
+  1. exact dimensions of every output, all nine posters native 16:9;
   2. nine content-unique backgrounds;
-  3. red/black/paper area ratios match the checker-of-anchors plan;
-  4. every pair of 600x400 thumbnails differs strongly;
-  5. targeted color probes (text sits on its intended field).
+  3. safe-area containment: re-running the actual generator code raises if
+     any critical element (type, seal, focal star mass) lands outside the
+     5% safe margin -- the same assertion rw.Sheet enforces at render time;
+  4. red/black/paper area ratios match the checker-of-anchors plan;
+  5. every pair of 600x400 thumbnails differs strongly;
+  6. targeted color probes (text sits on its intended field).
 """
 
 import hashlib
@@ -19,20 +22,19 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from PIL import Image
 
+from posters import POSTERS
+from rw import SAFE_X0, SAFE_X1, SAFE_Y0, SAFE_Y1, SRC_H, SRC_W
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BG = os.path.join(ROOT, "backgrounds")
 
-SLUGS = ["sunburst", "starcog", "wedge", "banner", "target",
-         "grid", "redfield", "manifesto", "macro"]
-
 # Buckets: paper clan (bright), ink clan (dark), red clan.
 PAPER_RGB = [(0xef, 0xe5, 0xd0), (0xe2, 0xd3, 0xb3)]
-SLUGS = ["sunburst", "starcog", "wedge", "grid", "target",
-         "banner", "redfield", "macro", "manifesto"]
-
-
 INK_RGB = [(0x21, 0x1c, 0x18)]
 RED_RGB = [(0xc3, 0x3d, 0x2e), (0xa0, 0x2f, 0x22)]
+
+SLUGS = ["sunburst", "starcog", "wedge", "grid", "target",
+         "banner", "redfield", "macro", "manifesto"]
 
 
 def nearest_clan(px):
@@ -76,7 +78,8 @@ def probe(path, points):
 def main():
     ok = True
 
-    # 1. dimensions
+    # 1. dimensions -- every installed background is native 16:9, matching
+    # the hero, so Quickshell's PreserveAspectCrop never clips it.
     dims = {
         "backgrounds/red-wedge.png": (3840, 2160),
         "backgrounds.jpg": (1800, 1200),
@@ -85,7 +88,7 @@ def main():
         "unlock.png": (512, 512),
     }
     for i, slug in enumerate(SLUGS, start=1):
-        dims[f"backgrounds/{i}-{slug}.jpg"] = (3840, 2560)
+        dims[f"backgrounds/{i}-{slug}.jpg"] = (3840, 2160)
     for rel, want in dims.items():
         im = Image.open(os.path.join(ROOT, rel))
         good = im.size == want
@@ -99,16 +102,45 @@ def main():
         hashes.add(hashlib.sha256(Image.open(p).tobytes()).hexdigest())
     good = len(hashes) == 9
     ok &= good
+    print(f"{'OK ' if good else 'FAIL'} 9 content-unique backgrounds "
+          f"({len(hashes)} distinct hashes)")
+
+    # 3. safe-area containment. rw.Sheet.text/paste/ring_star/patrons raise
+    # ValueError the instant a critical element crosses the 5% safe margin
+    # (or the true frame). Re-running the generator code re-exercises that
+    # assertion against the checked-in source, not just a past render.
+    good = (SRC_W, SRC_H) == (3840, 2160)
+    ok &= good
+    print(f"{'OK ' if good else 'FAIL'} native canvas {SRC_W}x{SRC_H} (want 3840x2160)")
+    want_safe = (192, 108, 3648, 2052)
+    got_safe = (SAFE_X0, SAFE_Y0, SAFE_X1, SAFE_Y1)
+    good = got_safe == want_safe
+    ok &= good
+    print(f"{'OK ' if good else 'FAIL'} 5% safe box {got_safe} (want {want_safe})")
+    for slug, fn in POSTERS:
+        try:
+            img = fn()
+            good = img.size == (SRC_W, SRC_H)
+            ok &= good
+            print(f"{'OK ' if good else 'FAIL'} {slug} safe-area containment "
+                  f"(re-rendered {img.size})")
+        except ValueError as e:
+            ok = False
+            print(f"FAIL {slug} safe-area containment: {e}")
+
+    # 4. area ratios vs. the checker-of-anchors plan (mins ~80% of the
+    # measured 2026-08-27 native-16:9 render; preserves the bright/dark/mid
+    # tonal pattern the 3x3 collage depends on).
     plan = {
-        "sunburst": (0.05, 0.03, 0.75),
-        "starcog": (0.01, 0.50, 0.08),
-        "wedge": (0.15, 0.03, 0.35),
-        "grid": (0.01, 0.45, 0.05),
-        "target": (0.06, 0.07, 0.35),
-        "banner": (0.03, 0.25, 0.40),
-        "redfield": (0.38, 0.10, 0.08),
-        "macro": (0.10, 0.18, 0.05),
-        "manifesto": (0.15, 0.015, 0.45),
+        "sunburst": (0.03, 0.02, 0.85),
+        "starcog": (0.01, 0.80, 0.05),
+        "wedge": (0.15, 0.03, 0.65),
+        "grid": (0.02, 0.75, 0.08),
+        "target": (0.04, 0.03, 0.80),
+        "banner": (0.02, 0.20, 0.60),
+        "redfield": (0.40, 0.15, 0.20),
+        "macro": (0.06, 0.09, 0.65),
+        "manifesto": (0.18, 0.015, 0.60),
     }
     print("poster       red    ink    paper")
     for i, slug in enumerate(SLUGS, start=1):
@@ -119,7 +151,7 @@ def main():
         print(f"{'OK ' if good else 'FAIL'}  {slug:10} "
               f"{r['red']:.2f}  {r['ink']:.2f}  {r['paper']:.2f}")
 
-    # 4. pairwise thumbnail distinctness
+    # 5. pairwise thumbnail distinctness
     thumbs = []
     for i, slug in enumerate(SLUGS, start=1):
         im = Image.open(os.path.join(BG, f"{i}-{slug}.jpg")).convert("L")
@@ -138,47 +170,47 @@ def main():
     print(f"{'OK ' if good else 'FAIL'} min pairwise thumb diff {worst:.1f}/255 "
           f"({worst_pair[0]} vs {worst_pair[1]})")
 
-    # 5. targeted probes
+    # 6. targeted probes
     checks = [
         ("backgrounds/7-redfield.jpg", [
-            ("band-left-of-text", (700, 875), "paper"),
-            ("below-band-is-red", (1920, 1600), "red"),
+            ("band", (700, 670), "paper"),
+            ("below-band-is-red", (1920, 1400), "red"),
             ("above-band-is-red", (1920, 60), "red"),
-            ("ink-band", (600, 2300), "ink"),
+            ("ink-band", (600, 1900), "ink"),
         ]),
         ("backgrounds/3-wedge.jpg", [
-            ("wedge-body", (700, 2300), "red"),
-            ("paper-field", (3300, 600), "paper"),
+            ("wedge-body", (700, 2000), "red"),
+            ("paper-field", (3300, 300), "paper"),
         ]),
         ("backgrounds/4-grid.jpg", [
             ("dark-field", (2370, 100), "ink"),
-            ("ring-star-cell", (570, 546), "red"),
-            ("paper-cell", (300, 1900), "paper"),
+            ("ring-star-cell", (560, 400), "red"),
+            ("paper-cell", (300, 1750), "paper"),
         ]),
         ("backgrounds/5-target.jpg", [
-            ("ink-band", (1920, 265), "ink"),
-            ("red-band", (1920, 570), "red"),
-            ("center-star", (1920, 1240), "red"),
+            ("ink-band", (1920, 430), "ink"),
+            ("red-band", (1920, 650), "red"),
+            ("center-star", (1920, 1080), "red"),
         ]),
         ("backgrounds/2-starcog.jpg", [
-            ("ink-field", (3300, 2100), "ink"),
-            ("gear-body", (1180, 1700), "paper"),
+            ("ink-field", (3300, 1900), "ink"),
+            ("gear-body", (1531, 1225), "paper"),
         ]),
         ("backgrounds/8-macro.jpg", [
-            ("ring-band-bottom", (1920, 2520), "ink"),
-            ("star-core", (2100, 1100), "red"),
-            ("wedge-slice", (300, 2400), "red"),
+            ("ring-band-bottom", (1920, 1900), "ink"),
+            ("star-core", (2070, 1080), "red"),
+            ("wedge-slice", (300, 2000), "red"),
         ]),
         ("backgrounds/6-banner.jpg", [
             ("ink-panel", (100, 1500), "ink"),
             ("cream-field", (2000, 1500), "paper"),
         ]),
         ("backgrounds/1-sunburst.jpg", [
-            ("sun-disc", (2560, 730), "red"),
-            ("below-horizon", (2000, 1700), "paper"),
+            ("sun-disc", (2710, 680), "red"),
+            ("below-horizon", (2000, 1200), "paper"),
         ]),
         ("backgrounds/9-manifesto.jpg", [
-            ("red-plate", (450, 2200), "red"),
+            ("red-plate", (150, 1700), "red"),
             ("paper-right", (2000, 1800), "paper"),
         ]),
         ("preview.png", [

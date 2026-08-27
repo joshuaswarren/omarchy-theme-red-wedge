@@ -6,7 +6,7 @@ panels (code editor, btop, file manager), all in the locked palette
 the reference theme preview. Nothing here is a live screenshot.
 """
 
-from PIL import Image
+from PIL import Image, ImageFilter
 
 from rw import (
     Sheet, PAPER, PAPER_DEEP, INK, RED, RED_DEEP,
@@ -210,8 +210,9 @@ def build_unlock_preview(hero):
     """Compose the 1800x1012 lock-screen preview."""
     s = Sheet(PW, PH)
     base = hero.resize((PW * s.ss, PH * s.ss), Image.LANCZOS)
+    base = base.filter(ImageFilter.GaussianBlur(28))
     s.img.paste(base, (0, 0))
-    scrim = Image.new("L", s.img.size, 42)
+    scrim = Image.new("L", s.img.size, 140)
     s.img.paste(Image.new("RGB", s.img.size, INK), (0, 0), scrim)
 
     s.text(PW / 2, 330, "13:37", s.font(LATO_BLACK, 190), INK)
@@ -286,5 +287,5 @@ def build_terminal():
         else:
             s.text(tx, y, row, mono, INK, anchor="lm")
     s.ring_star(PW - 220, 220, 120, 50, ring_w=32)
-    s.patrons(PW - 420, 420, r_big=16, r_small=11, gap=48)
+    s.patrons(PW - 500, 420, r_big=16, r_small=11, gap=48)
     return s.finish()
