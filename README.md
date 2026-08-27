@@ -1,47 +1,30 @@
 # Red Wedge
 
-An Omarchy theme. Approved by the Central Committee of the Omacom Foundation.
+A light theme for [Omarchy](https://omarchy.org). Old print work guides the look. Each poster stays within aged paper, black ink, and party red.
 
 ![Red Wedge preview](preview.png)
 
 ![Red Wedge backgrounds](backgrounds.jpg)
 
-Constructivist agitprop for the world's best-capitalized free software:
-DHH's own tagline, "Redistributing billionaire wealth, one ISO at a time,"
-set in poster type behind a Lissitzky wedge. Eight red stars for the eight
-founding patrons, two smaller ones added later. A light theme - poster
-paper, ink black, and party red.
-
-The name is after El Lissitzky's 1919 "Beat the Whites with the Red Wedge."
+Nine scenes shift the scale and balance. Wedges, stars, targets, grids, and bold type keep each frame distinct.
 
 ## Install
 
+```bash
+omarchy theme install https://github.com/joshuaswarren/omarchy-theme-red-wedge
 ```
-omarchy-theme-install https://github.com/joshuaswarren/omarchy-theme-red-wedge
-```
-
-## Anatomy
-
-- `preview.png` - hero wallpaper
-- `backgrounds.jpg` - all 9 era variants at a glance
-- `backgrounds/[1-9]-*-poster.jpg` - individual era variants (1919-1989)
-- `backgrounds/red-wedge.png` - the canonical poster at 3840x2160
-- `bin/generate.py` - the press; regenerates wallpaper and unlock glyph
-- `bin/variants.py` - renders the 9 era variants
-- `bin/make_collage.py` - composes the 3x2 collage into `backgrounds.jpg`
-- `colors.toml` - light terminal and shell palette
-- `btop.theme`, `neovim.lua` (inline mini.base16), `vscode.json`, `icons.theme`
-- `unlock.png` - ring and star for the lock screen
 
 ## Palette
 
 | Role | Hex |
 | --- | --- |
-| Background (poster paper) | `#efe5d0` |
-| Foreground (ink) | `#211c18` |
-| Accent (party red) | `#c33d2e` |
-| Olive drab | `#6d7a4f` |
-| Mustard | `#c99a2e` |
-| Steel blue | `#46688c` |
+| Background | `#efe5d0`. |
+| Ink | `#211c18`. |
+| Accent | `#c33d2e`. |
+| Deep red | `#a02f22`. |
+| Olive | `#6d7a4f`. |
+| Mustard | `#c99a2e`. |
+| Steel blue | `#46688c`. |
+| Muted | `#8a8272`. |
 
-The revolution will be omakase.
+See [`colors.toml`](colors.toml) for the full ANSI set. Icons use `Yaru-red`.
