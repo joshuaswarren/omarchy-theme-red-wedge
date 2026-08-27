@@ -2,6 +2,10 @@
 
 An Omarchy theme. Approved by the Central Committee of the Omacom Foundation.
 
+![Red Wedge preview](preview.png)
+
+![Red Wedge backgrounds](backgrounds.jpg)
+
 Constructivist agitprop for the world's best-capitalized free software:
 DHH's own tagline, "Redistributing billionaire wealth, one ISO at a time,"
 set in poster type behind a Lissitzky wedge. Eight red stars for the eight
@@ -18,8 +22,13 @@ omarchy-theme-install https://github.com/joshuaswarren/omarchy-theme-red-wedge
 
 ## Anatomy
 
-- `backgrounds/red-wedge.png` - the poster, 3840x2160, procedurally generated
+- `preview.png` - hero wallpaper
+- `backgrounds.jpg` - all 9 era variants at a glance
+- `backgrounds/[1-9]-*-poster.jpg` - individual era variants (1919-1989)
+- `backgrounds/red-wedge.png` - the canonical poster at 3840x2160
 - `bin/generate.py` - the press; regenerates wallpaper and unlock glyph
+- `bin/variants.py` - renders the 9 era variants
+- `bin/make_collage.py` - composes the 3x2 collage into `backgrounds.jpg`
 - `colors.toml` - light terminal and shell palette
 - `btop.theme`, `neovim.lua` (inline mini.base16), `vscode.json`, `icons.theme`
 - `unlock.png` - ring and star for the lock screen
